@@ -1,0 +1,140 @@
+{
+	"info": {
+		"_postman_id": "a75e6fc7-25fa-41a7-99ad-595b67093462",
+		"name": "API deportes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26899953"
+	},
+	"item": [
+		{
+			"name": "Lista todas las ligas deportivas",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Validar que la respuesta se procese por debjo de 1000 milisegundos\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validar que la respuesta contenga un texto que diga “Leagues”\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Leagues\");\r",
+							"});\r",
+							"pm.test(\"Validar que la respuesta contenga una liga con nombre “English League Championship”\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"English League Championship\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://www.thesportsdb.com/api/v1/json/3/all_leagues.php",
+					"protocol": "https",
+					"host": [
+						"www",
+						"thesportsdb",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"json",
+						"3",
+						"all_leagues.php"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista los equipos por deporte y país",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"\r",
+							"pm.globals.set(\"country\", pm.variables.replaceIn('{{$randomCountry}}'));"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Encabezado de respuesta contiene Content-Type\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validacion de respuesta de un vector\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"            \r",
+							"    console.log(jsonData.teams[0].idTeam)\r",
+							"    pm.expect(jsonData.teams[1].idTeam).to.have.length(6);\r",
+							"    pm.expect(jsonData.teams[1].strTeam).to.be.a('string');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validar que contenta la palabra First\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"First\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "javascript"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?s=Soccer&c={{country}}",
+					"protocol": "https",
+					"host": [
+						"www",
+						"thesportsdb",
+						"com"
+					],
+					"path": [
+						"api",
+						"v1",
+						"json",
+						"3",
+						"search_all_teams.php"
+					],
+					"query": [
+						{
+							"key": "s",
+							"value": "Soccer"
+						},
+						{
+							"key": "c",
+							"value": "{{country}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
